@@ -30,7 +30,7 @@ WINAPI int _VDSO_QueryInterruptTime(PULONGLONG _outtime)
     *_outtime = *(PULONGLONG)0x7FFE0008;
     return 0;
 #else
-    PULARGE_INTEGER outtime = (PULARGE_INTEGER)_outtime;
+    ULARGE_INTEGER outtime;
     volatile DWORD* vdso = (volatile DWORD*)0x7FFE0008;
     #define VDSO_LOW 0
     #define VDSO_HIGH 1
@@ -38,15 +38,15 @@ WINAPI int _VDSO_QueryInterruptTime(PULONGLONG _outtime)
     
     for(;;)
     {
-        DWORD bak = vdso[VDSO_HIGH];
-        if(__builtin_expect(bak != vdso[VDSO_CHECK], 0))
+        register DWORD time_high = vdso[VDSO_HIGH];
+        register DWORD time_low = vdso[VDSO_LOW];
+        if(__builtin_expect(time_high != vdso[VDSO_CHECK], 0))
             continue;
         
-        outtime->LowPart = vdso[VDSO_LOW];
-        outtime->HighPart = bak;
-        
-        //if(ass_likely(bak == vdso[VDSO_CHECK]))
-            return 0;
+        outtime.LowPart = time_low;
+        outtime.HighPart = time_high;
+        *_outtime = outtime.QuadPart;
+        return 0;
     }
 #endif
 }
@@ -226,7 +226,7 @@ static LRESULT CALLBACK WindowProc(HWND wnd, UINT uMsg, WPARAM wParam, LPARAM lP
             
             LRESULT cwresult = DefWindowProcW(wnd, uMsg, wParam, lParam);
             
-            //fuck lose10 for breaking a such simple thing as AdjustWindowRect ª_ª
+            //fuck lose10 for breaking a such simple thing as AdjustWindowRect Âª_Âª
             
             RECT wndrect;
             RECT clirect;

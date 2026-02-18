@@ -510,32 +510,17 @@ static __attribute__((noinline)) void FlushToilet()
     }
 }
 
+static cbMMLongMsg realLongMsg = 0;
+
 static int WINAPI dwLongMsg(DWORD dwMsg, LPCVOID ptr, DWORD len)
 {
+    if(realLongMsg)
+        realLongMsg(dwMsg, ptr, len);
+    
     if(len > 256)
     {
         printf("LongMsg too long (%i), ignoring\n", len);
         return 1;
-    }
-    
-    if(KSModule && (BYTE)dwMsg == 0xF0)
-    {
-        BYTE buf[256];
-        buf[0] = 0xF0;
-        CopyMemory(buf + 1, ptr, len);
-        
-        int(WINAPI*KModMsg)(UINT,UINT,DWORD_PTR,DWORD_PTR,DWORD_PTR) = (void*)GetProcAddress(KSModule, "modMessage");
-        if(KModMsg)
-        {
-            MIDIHDR hdr;
-            ZeroMemory(&hdr, sizeof(hdr));
-            hdr.dwFlags = MHDR_PREPARED;
-            hdr.dwBufferLength = len + 1;
-            hdr.dwBytesRecorded = len + 1;
-            hdr.lpData = (LPVOID)buf;
-            while(KModMsg(0, 8, 0, (DWORD_PTR)&hdr, sizeof(hdr)) == 67)
-                /* do nothing */;
-        }
     }
     
     //printf("LongMsg: %8X %u\n", dwMsg, len);
@@ -1597,6 +1582,7 @@ DWORD WINAPI RenderThread(PVOID lpParameter)
     PlayerNotecatcher->KLongMsg = 0;//LongMessage;
     PlayerNotecatcher->KSyncFunc = NoteReturn;
     
+    realLongMsg = PlayerReal->KLongMsg;
     PlayerReal->SleepTicksMax = 1;
     PlayerReal->KLongMsg = dwLongMsg;
     

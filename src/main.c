@@ -225,7 +225,7 @@ static LRESULT CALLBACK WindowProc(HWND wnd, UINT uMsg, WPARAM wParam, LPARAM lP
             
             LRESULT cwresult = DefWindowProcW(wnd, uMsg, wParam, lParam);
             
-            //fuck lose10 for breaking a such simple thing as AdjustWindowRect ª_ª
+            //fuck lose10 for breaking a such simple thing as AdjustWindowRect Âª_Âª
             
             RECT wndrect;
             RECT clirect;
@@ -620,6 +620,46 @@ static void WINAPI PlayerSyncFunc(MMPlayer* player, DWORD deltaTicks)
     player->KShortMsg(~0);
 }
 
+static DWORD(WINAPI*lpKSLongMsg)(LPMIDIHDR hdr) = 0;
+static DWORD(WINAPI*lpKSLongPrep)(LPMIDIHDR hdr) = 0;
+static DWORD(WINAPI*lpKSLongUnprep)(LPMIDIHDR hdr) = 0;
+
+static int WINAPI kLongMsg(DWORD msg, LPCVOID buf, DWORD length)
+{
+    if((u8)msg != 0xF0)
+        return 0;
+    
+    if(lpKSLongMsg)
+    {
+        u8 data[length+1];
+        
+        data[0] = (u8)msg;
+        memcpy(&data[1], buf, length);
+        
+        MIDIHDR hdr = {};
+        hdr.lpData = data;
+        hdr.dwBufferLength = length + 1;
+        hdr.dwBytesRecorded = length + 1;
+        if(lpKSLongPrep)
+            lpKSLongPrep(&hdr);
+        DWORD res;
+        do
+        {
+            res = lpKSLongMsg(&hdr);
+        }
+        while(res == MIDIERR_NOTREADY);
+        if(lpKSLongUnprep)
+        {
+            while(lpKSLongUnprep(&hdr) == MIDIERR_STILLPLAYING)
+                ;
+        }
+        
+        return res;
+    }
+    
+    return 0;
+}
+
 DWORD (WINAPI*mGetModuleBaseNameA)
 (
     HANDLE  hProcess,
@@ -822,6 +862,17 @@ __attribute__((no_instrument_function)) int main(int argc, char** argv)
         "NoBuf"
     #endif
         );
+        
+        lpKSLongMsg = (void*)GetProcAddress(ks, "SendDirectLongData"
+        #ifdef NOBUF
+            "NoBuf"
+        #endif
+            );
+        lpKSLongPrep = (void*)GetProcAddress(ks, "PrepareLongData");
+        lpKSLongUnprep = (void*)GetProcAddress(ks, "UnprepareLongData");
+        
+        if(lpKSLongMsg)
+            player->KLongMsg = kLongMsg;
         
     #ifdef NOBUF
         LONGLONG delay = -2500000;

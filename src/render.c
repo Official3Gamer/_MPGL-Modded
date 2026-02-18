@@ -1636,13 +1636,11 @@ DWORD WINAPI RenderThread(PVOID lpParameter)
     CreateThread(0, 0x4000, PlayerThread, PlayerNotecatcher, 0, 0);
     //CreateThread(0, 0x4000, PlayerThread, PlayerReal, 0, 0);
     
-    extern int _VDSO_QueryInterruptTime(PULONGLONG _outtime);
-    //int(WINAPI*NtQuerySystemTime)(ULONGLONG* timeptr) = (void*)GetProcAddress(GetModuleHandle("ntdll"), "NtQuerySystemTime");
-    int(WINAPI*NtQuerySystemTime)(PULONGLONG timeptr) = _VDSO_QueryInterruptTime;
+    extern void VDSO_QueryInterruptTime(u64* __restrict _outtime);
     
-    ULONGLONG prevtime;
-    NtQuerySystemTime(&prevtime);
-    ULONGLONG currtime = prevtime;
+    u64 prevtime;
+    VDSO_QueryInterruptTime(&prevtime);
+    u64 currtime = prevtime;
     
     DWORD timeout = 0;
     
@@ -2232,7 +2230,7 @@ DWORD WINAPI RenderThread(PVOID lpParameter)
         #endif
         */
         
-        NtQuerySystemTime(&currtime);
+        VDSO_QueryInterruptTime(&currtime);
         #if !defined(TIMI_CAPTURE) || defined(TIMI_NOWAIT) // || defined(TIMI_NOCAPTURE)
         if((currtime - prevtime) > 10000)
             timeout = 0;

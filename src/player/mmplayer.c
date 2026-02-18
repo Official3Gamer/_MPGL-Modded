@@ -121,13 +121,9 @@ DWORD WINAPI PlayerThread(PVOID lpParameter)
     
     player->done = false;
     
-    extern int WINAPI _VDSO_QueryInterruptTime(PULONGLONG _outtime);
+    extern void VDSO_QueryInterruptTime(u64* __restrict _outtime);
     int(WINAPI*NtDelayExecution)(int doalert, INT64* timeptr) = 0;
-    int(WINAPI*NtQuerySystemTime)(PULONGLONG timeptr) = 0;
-    
     NtDelayExecution = (void*)GetProcAddress(GetModuleHandle("ntdll"), "NtDelayExecution");
-    //NtQuerySystemTime = (void*)GetProcAddress(GetModuleHandle("ntdll"), "NtQuerySystemTime");
-    NtQuerySystemTime = (void*)_VDSO_QueryInterruptTime;
     
     MMTick counter = 0;
 #ifndef MODE_BH
@@ -191,7 +187,7 @@ DWORD WINAPI PlayerThread(PVOID lpParameter)
     
     {
         u64 time;
-        NtQuerySystemTime(&time);
+        VDSO_QueryInterruptTime(&time);
         mmtimer_reset(timer, time);
     }
     
@@ -498,7 +494,7 @@ DWORD WINAPI PlayerThread(PVOID lpParameter)
                 u64 should_sleep_time;
                 {
                     u64 time;
-                    NtQuerySystemTime(&time);
+                    VDSO_QueryInterruptTime(&time);
                     should_sleep_time = mmtimer_get(timer, time, sleeptime);
                 }
                 
@@ -537,7 +533,7 @@ DWORD WINAPI PlayerThread(PVOID lpParameter)
             {
                 {
                     u64 time;
-                    NtQuerySystemTime(&time);
+                    VDSO_QueryInterruptTime(&time);
                     mmtimer_reset(timer, time);
                 }
                 

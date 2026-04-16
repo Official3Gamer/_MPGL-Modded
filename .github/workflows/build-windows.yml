@@ -1,35 +1,39 @@
-name: Build (Windows/MSYS2)
+name: Build (Linux -> Windows .exe)
 
 on: [push, pull_request]
 
 jobs:
   build:
-    runs-on: windows-latest
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
 
-      - name: Setup MSYS2
-        uses: msys2/setup-msys2@v2
-        with:
-          update: true
-
-      - name: Install packages
-        shell: msys2 {0}
+      - name: Install build tools and mingw-w64
         run: |
-          pacman -S --noconfirm mingw-w64-x86_64-toolchain mingw-w64-x86_64-make git
+          sudo apt update
+          sudo apt install -y build-essential mingw-w64 git make
 
-      - name: Build (MSYS2 /mingw64)
-        shell: msys2 {0}
-        env:
-          PATH: /mingw64/bin:/usr/bin:${{ env.PATH }}
+      - name: Build cross-compiled Windows binary
         run: |
           cd "$GITHUB_WORKSPACE"
-          which gcc || echo "gcc not found"
-          which make || echo "make not found"
+          # prefer the 64-bit toolchain; adjust to i686-w64-mingw32 if you need 32-bit
+          export CC=x86_64-w64-mingw32-gcc
+          export CXX=x86_64-w64-mingw32-g++
+          export AR=x86_64-w64-mingw32-ar
+          export STRIP=x86_64-w64-mingw32-strip
+          make clean || true
           make
+        env:
+          PKG_CONFIG_ALLOW_CROSS: "1"
 
-      - name: Upload artifact
+      - name: Package and upload artifact
+        run: |
+          mkdir -p out
+          # adjust binary name/path if different; tries common locations
+          if [ -f out/MPGL.exe ]; then cp out/MPGL.exe out/mpgl.exe; fi
+          if [ -f MPGL.exe ]; then cp MPGL.exe out/mpgl.exe; fi
+          ls -l out || ls -l
         uses: actions/upload-artifact@v4
         with:
-          name: mpgl-windows
+          name: mpgl-windows-exe
           path: out/*

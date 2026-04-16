@@ -24,8 +24,9 @@
 #define KEYBOARD
 //#define TRIPPY
 //#define WIDEMIDI
-#define GLOW
+//#define GLOW
 #define TEXTNPS
+#define TEXTBPM
 //#define HDR
 //#define NOKEYBOARD
 //#define TIMI_CAPTURE

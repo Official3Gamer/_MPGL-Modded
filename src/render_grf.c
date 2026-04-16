@@ -5,7 +5,12 @@
 
 #include "config.h"
 
-#ifndef HEADLESS
+#ifndef HEADLESS   // <--- This starts at Line 8
+    // ... code ...
+    #ifdef SOME_OTHER_MACRO  // <--- If this is here...
+        // ... code ...
+    #endif // <--- This closes SOME_OTHER_MACRO, not HEADLESS!
+#endif // <--- You need ANOTHER one here to close HEADLESS
 
 #include "GL/ctor.h"
 #include "GL/core.h"

@@ -21,10 +21,12 @@ jobs:
 
       - name: Build (MSYS2 /mingw64)
         shell: msys2 {0}
-        env:
-          PATH: /mingw64/bin:/usr/bin:${{ env.PATH }}
-run: /usr/bin/bash -lc 'export PATH=/mingw64/bin:$PATH && cd "$GITHUB_WORKSPACE" && /mingw64/bin/make'
-
+        run: |
+          export PATH=/mingw64/bin:/usr/bin:$PATH
+          cd "$GITHUB_WORKSPACE"
+          which gcc || echo "gcc not found"
+          which make || echo "make not found"
+          make
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4

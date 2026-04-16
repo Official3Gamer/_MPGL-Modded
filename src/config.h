@@ -40,7 +40,7 @@
 #define TEXTCUSTOM1
 #define TEXTTRANS
 #define GRACE
-#define DEBUGTEXT
+//#define DEBUGTEXT
 //#define EXTREMEDEBUG
 #define OLDDENSE
 #define OVERLAPREMOVE
@@ -51,8 +51,8 @@
 #define WMA_SIZE 16
 //#define WMA_SIZE 3
 
-//#define CUSTOMTICK PlayerReal->timediv >> 3
-//#define CUSTOMTICK PlayerReal->timediv >> 2
+#define CUSTOMTICK PlayerReal->timediv >> 3
+#define CUSTOMTICK PlayerReal->timediv >> 2
 #define CUSTOMTICK   PlayerReal->timediv
 
 #define TIMI_FPS_DENIM 60

@@ -347,10 +347,13 @@ void grfDrawFontOverlay(void)
         grfDrawFontString(TEXTR, TEXTD - 0, 2, dwColor >> 1, buf);
     }
     #endif
-    
-    #ifdef DEBUGTEXT
+
+
+    #ifdef TEXTBPM
     textlen = sprintf(buf, "BPM:   %06X | %i (%6.2f)", PlayerReal->tempo, PlayerReal->tempo, 60000000 / (float)PlayerReal->tempo);
     grfDrawFontString(-128, -60, 2, -1, buf);
+    
+    #ifdef DEBUGTEXT
     
     textlen = sprintf(buf, "Time:  %llu / %u == %llu (%llu + %llu)",
         PlayerReal->RealTimeUndiv, PlayerReal->timediv,

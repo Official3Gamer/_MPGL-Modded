@@ -8,7 +8,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - name: Setup MSYS2
-        uses: msys2/setup-msys2@v3
+        uses: msys2/setup-msys2@v2
         with:
           update: true
       - name: Install packages
@@ -17,7 +17,8 @@ jobs:
       - name: Build
         shell: msys2 {0}
         run: |
-          /usr/bin/bash -lc "cd $GITHUB_WORKSPACE && make"
+          cd "$GITHUB_WORKSPACE"
+          /mingw64/bin/make
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:

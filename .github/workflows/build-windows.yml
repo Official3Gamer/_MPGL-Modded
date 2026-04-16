@@ -1,0 +1,25 @@
+name: Build (Windows/MSYS2)
+
+on: [push, pull_request]
+
+jobs:
+  build:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup MSYS2
+        uses: msys2/setup-msys2@v3
+        with:
+          update: true
+      - name: Install packages
+        shell: msys2 {0}
+        run: pacman -S --noconfirm mingw-w64-x86_64-toolchain mingw-w64-x86_64-make git
+      - name: Build
+        shell: msys2 {0}
+        run: |
+          /usr/bin/bash -lc "cd $GITHUB_WORKSPACE && make"
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: mpgl-windows
+          path: out/*

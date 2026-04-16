@@ -40,7 +40,7 @@
 #define TEXTCUSTOM1
 #define TEXTTRANS
 #define GRACE
-//#define DEBUGTEXT
+#define DEBUGTEXT
 //#define EXTREMEDEBUG
 #define OLDDENSE
 #define OVERLAPREMOVE

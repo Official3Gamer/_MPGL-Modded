@@ -1,0 +1,44 @@
+name: Build (Windows/MSYS2) Manual Upload to Release
+
+jobs:
+  build:
+    runs-on: windows-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup MSYS2
+        uses: msys2/setup-msys2@v2
+        with:
+          msystem: MINGW64 
+          update: true
+
+      - name: Install packages
+        shell: msys2 {0}
+        # CHANGED: Replaced mingw-w64-x86_64-make with standard make
+        run: |
+          pacman -S --noconfirm mingw-w64-x86_64-toolchain make git
+
+      - name: Setup Java
+        uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+
+      - name: Build (MSYS2 /mingw64)
+        shell: msys2 {0}
+        run: |
+          cd "$GITHUB_WORKSPACE"
+          which gcc || echo "gcc not found"
+          which make || echo "make not found"
+          make # Back to standard make!
+
+      - name: Upload to GitHub Release
+        uses: softprops/action-gh-release@v1
+        with:
+          tag_name: ${{ github.sha }}
+          name: ${{ github.sha }}
+          prerelease: true
+          files: out/*
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

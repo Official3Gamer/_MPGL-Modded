@@ -3,6 +3,8 @@
 MIDI Player OpenGL (MPGL) was created in very early 2019 to try replace Piano From Above (PFA) in terms of better performance and less RAM use,
 but instead it ended up turning into its own thing over time.
 
+This is a modified version of the software to add or edit features
+
 MPGL uses a modified Morshu-mmidi player core, which was a revolutionary player and decoder engine at the time, so it had superior playback performance compared to the rest of the players at the time.  
 However, due to its single-threaded nature, and its note-ordering system, it doesn't quite hold up anymore today as it did back then, as the track scanning ends up taking more CPU time than actual decoding.  
 But that's okay, it did its job on our 2nd-gen i7 and Core 2 Quad and Pentium CPUs :P

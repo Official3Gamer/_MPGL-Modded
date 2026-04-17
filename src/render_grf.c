@@ -353,7 +353,7 @@ void grfDrawFontOverlay(void)
     }
     #endif
 
-    // Adding this because the original person only has one value set to show BPM and I think people should know the bpm when running midis
+    // Adding this because the original person only has one Defined value set in config.h to show BPM and I think people should know the bpm when running midis
 
     // Removed Value %06X | %i (%6.2f)",
     #ifdef TEXTBPM

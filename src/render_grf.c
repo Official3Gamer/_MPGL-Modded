@@ -353,9 +353,11 @@ void grfDrawFontOverlay(void)
     }
     #endif
 
+    // Adding this because the original person only has one value set to show BPM and I think people should know the bpm when running midis
 
+    // Removed Value %06X | %i (%6.2f)",
     #ifdef TEXTBPM
-    textlen = sprintf(buf, "BPM:   %06X | %i (%6.2f)", PlayerReal->tempo, PlayerReal->tempo, 60000000 / (float)PlayerReal->tempo);
+    textlen = sprintf(buf, "BPM:  PlayerReal->tempo, PlayerReal->tempo, 60000000 / (float)PlayerReal->tempo);
     grfDrawFontString(-128, -60, 2, -1, buf);
     
     #ifdef DEBUGTEXT

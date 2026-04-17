@@ -357,7 +357,7 @@ void grfDrawFontOverlay(void)
 
     // Removed Value %06X | %i (%6.2f)",
     #ifdef TEXTBPM
-    textlen = sprintf(buf, "BPM:  PlayerReal->tempo, PlayerReal->tempo, 60000000 / (float)PlayerReal->tempo);
+    textlen = sprintf(buf, "BPM: %d (%.2f)", PlayerReal->tempo, 60000000 / (float)PlayerReal->tempo);
     grfDrawFontString(-128, -60, 2, -1, buf);
     
     #ifdef DEBUGTEXT

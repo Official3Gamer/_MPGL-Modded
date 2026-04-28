@@ -1208,7 +1208,7 @@ static
 #endif
 DWORD WINAPI RenderThread(PVOID lpParameter)
 {
-    puts("Hello from renderer");
+    puts("Renderer Active");
     
     isrender = FALSE;
     
@@ -1327,7 +1327,7 @@ DWORD WINAPI RenderThread(PVOID lpParameter)
     
     LineTable = malloc(trackcount * sizeof(*LineTable));
     if(!LineTable)
-        puts("No colortable, fuck");
+        puts("No colortable, fuck!");
     
     midisize += sizeof(*LineTable) * trackcount;
     
@@ -2313,7 +2313,7 @@ DWORD WINAPI RenderThread(PVOID lpParameter)
         }
         #endif
         
-        puts("MIDI end");
+        puts("MIDI ENDED");
         
         glFinish();
         free(quads);
@@ -2340,7 +2340,7 @@ DWORD WINAPI RenderThread(PVOID lpParameter)
 #endif
     
     
-    puts("Renderer died");
+    puts("Renderer is tweaking");
     
     return 0;
 }

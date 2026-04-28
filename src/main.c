@@ -225,7 +225,7 @@ static LRESULT CALLBACK WindowProc(HWND wnd, UINT uMsg, WPARAM wParam, LPARAM lP
             
             LRESULT cwresult = DefWindowProcW(wnd, uMsg, wParam, lParam);
             
-            //fuck lose10 for breaking a such simple thing as AdjustWindowRect ª_ª
+            //fuck lose10 for breaking a such simple thing as AdjustWindowRect ï¿½_ï¿½
             
             RECT wndrect;
             RECT clirect;
@@ -698,11 +698,12 @@ __attribute__((no_instrument_function)) int main(int argc, char** argv)
     if(!mGetModuleBaseNameA)
         puts("Warning: recursive crashing ahead!");
     
-    puts("MIDI Player OpenGL");
+    puts("MIDI Player OpenGL [Modded]");
     puts(" build " DATETIME);
     puts("Copyright (C) 2019-2020 Sono");
     puts("All Rights Reserved.");
     puts("");
+    puts("Modded By OfficialGamer")
     
 #ifndef TRIPLEO
     HMODULE ks = LoadLibraryA("timiditydrv.dll");
